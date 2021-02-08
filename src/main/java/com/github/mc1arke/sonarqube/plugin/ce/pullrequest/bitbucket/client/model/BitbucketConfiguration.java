@@ -23,12 +23,14 @@ import java.util.Locale;
 public class BitbucketConfiguration {
     private final String url;
     private final String token;
+    private final String oauth2Key;
     private final String repository;
     private final String project;
 
-    public BitbucketConfiguration(String url, String token, String repository, String project) {
+    public BitbucketConfiguration(String url, String token, String oauth2Key, String repository, String project) {
         this.url = url;
         this.token = token;
+        this.oauth2Key = oauth2Key;
         this.repository = repository;
         this.project = project;
     }
@@ -39,6 +41,10 @@ public class BitbucketConfiguration {
 
     public String getToken() {
         return token;
+    }
+
+    public String getOauth2Key() {
+        return oauth2Key;
     }
 
     public String getUrl() {

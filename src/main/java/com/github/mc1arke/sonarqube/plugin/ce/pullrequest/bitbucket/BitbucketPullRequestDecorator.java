@@ -61,6 +61,8 @@ public class BitbucketPullRequestDecorator implements PullRequestBuildStatusDeco
 
     public static final String PULL_REQUEST_BITBUCKET_TOKEN = "com.github.mc1arke.sonarqube.plugin.branch.pullrequest.bitbucket.token";
 
+    public static final String PULL_REQUEST_BITBUCKET_OAUTH2_KEY = "com.github.mc1arke.sonarqube.plugin.branch.pullrequest.bitbucket.oauth2.key";
+
     public static final String PULL_REQUEST_BITBUCKET_PROJECT_KEY = "sonar.pullrequest.bitbucket.projectKey";
 
     public static final String PULL_REQUEST_BITBUCKET_REPOSITORY_SLUG = "sonar.pullrequest.bitbucket.repositorySlug";
@@ -84,7 +86,8 @@ public class BitbucketPullRequestDecorator implements PullRequestBuildStatusDeco
         String repo = configuration.getRequiredProperty(PULL_REQUEST_BITBUCKET_REPOSITORY_SLUG);
         String url = configuration.getRequiredProperty(PULL_REQUEST_BITBUCKET_URL);
         String token = configuration.getRequiredProperty(PULL_REQUEST_BITBUCKET_TOKEN);
-        BitbucketConfiguration bitbucketConfiguration = new BitbucketConfiguration(url, token, repo, project);
+        String oauth2Key = configuration.getRequiredProperty(PULL_REQUEST_BITBUCKET_OAUTH2_KEY);
+        BitbucketConfiguration bitbucketConfiguration = new BitbucketConfiguration(url, token, oauth2Key, repo, project);
 
         BitbucketClient client = createClient(bitbucketConfiguration);
 

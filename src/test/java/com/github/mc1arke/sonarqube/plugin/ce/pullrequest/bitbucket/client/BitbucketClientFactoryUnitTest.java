@@ -10,7 +10,7 @@ public class BitbucketClientFactoryUnitTest {
     @Test
     public void testCreateClientIsCloudIfUrlMatches() {
         // given
-        BitbucketConfiguration configuration = new BitbucketConfiguration("https://api.bitbucket.org", "token", "repository", "project");
+        BitbucketConfiguration configuration = new BitbucketConfiguration("https://api.bitbucket.org", "token", "oauth2key", "repository", "project");
 
         // when
         BitbucketClient client = BitbucketClientFactory.createClient(configuration);
@@ -22,7 +22,7 @@ public class BitbucketClientFactoryUnitTest {
     @Test
     public void testCreateClientIsServerIfNotApiUrl() {
         // given
-        BitbucketConfiguration configuration = new BitbucketConfiguration("https://api.server.org", "token", "repository", "project");
+        BitbucketConfiguration configuration = new BitbucketConfiguration("https://api.server.org", "token", "oauth2key", "repository", "project");
 
         // when
         BitbucketClient client = BitbucketClientFactory.createClient(configuration);

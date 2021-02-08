@@ -53,7 +53,7 @@ public class BitbucketServerClientUnitTest {
 
     @Before
     public void before() {
-        BitbucketConfiguration config = new BitbucketConfiguration("https://my-server.org", "token", "repository", "project");
+        BitbucketConfiguration config = new BitbucketConfiguration("https://my-server.org", "token", "oauth2key", "repository", "project");
         underTest = new BitbucketServerClient(config, mapper) {
             @Override
             OkHttpClient getClient() {

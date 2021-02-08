@@ -14,7 +14,7 @@ public class BitbucketConfigurationUnitTest {
     @Test
     public void testIsCloudTrue() {
         // given
-        BitbucketConfiguration configuration = new BitbucketConfiguration("https://api.bitbucket.org", "token", "repository", "project");
+        BitbucketConfiguration configuration = new BitbucketConfiguration("https://api.bitbucket.org", "token", "oauth2key", "repository", "project");
 
         // when
         boolean result = configuration.isCloud();
@@ -22,6 +22,7 @@ public class BitbucketConfigurationUnitTest {
         // then
         assertTrue(result);
         assertEquals("token", configuration.getToken());
+        assertEquals("oauth2key", configuration.getOauth2Key());
         assertEquals("repository", configuration.getRepository());
         assertEquals("https://api.bitbucket.org", configuration.getUrl());
         assertEquals("project", configuration.getProject());
@@ -30,7 +31,7 @@ public class BitbucketConfigurationUnitTest {
     @Test
     public void testIsCloudTrueForOtherCasing() {
         // given
-        BitbucketConfiguration configuration = new BitbucketConfiguration("https://API.BITBUCKET.org", "token", "repository", "project");
+        BitbucketConfiguration configuration = new BitbucketConfiguration("https://API.BITBUCKET.org", "token", "oauth2key", "repository", "project");
 
         // when
         boolean result = configuration.isCloud();
@@ -42,7 +43,7 @@ public class BitbucketConfigurationUnitTest {
     @Test
     public void testIsCloudReturnsFalseForServerVersion() {
         // given
-        BitbucketConfiguration configuration = new BitbucketConfiguration("https://API.server.org", "token", "repository", "project");
+        BitbucketConfiguration configuration = new BitbucketConfiguration("https://API.server.org", "token", "oauth2key", "repository", "project");
 
         // when
         boolean result = configuration.isCloud();

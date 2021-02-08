@@ -139,8 +139,12 @@ public class CommunityBranchPlugin implements Plugin, CoreExtension {
                             .onQualifiers(Qualifiers.PROJECT).name("URL for Bitbucket (Server or Cloud) instance").description("Example: http://bitbucket.local").type(PropertyType.STRING).build(),
 
                     PropertyDefinition.builder(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_TOKEN).category(PULL_REQUEST_CATEGORY_LABEL).subCategory(BITBUCKET_INTEGRATION_SUBCATEGORY_LABEL)
-                            .onQualifiers(Qualifiers.PROJECT).name("The token for the user to comment to the PR on Bitbucket (Server or Cloud) instance")
+                            .onQualifiers(Qualifiers.PROJECT).name("The token (or OAuth2 secret) for the user to comment to the PR on Bitbucket (Server or Cloud) instance")
                             .description("Token used for authentication and commenting to your Bitbucket instance").type(PropertyType.STRING).build(),
+
+                    PropertyDefinition.builder(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_OAUTH2_KEY).category(PULL_REQUEST_CATEGORY_LABEL).subCategory(BITBUCKET_INTEGRATION_SUBCATEGORY_LABEL)
+                            .onQualifiers(Qualifiers.PROJECT).name("OAuth2 key for the user to comment to the PR on Bitbucket (Server or Cloud) instance")
+                            .description("OAuth2 key used for authentication and commenting to your Bitbucket instance. OAuth2 authorization used if this key specified").type(PropertyType.STRING).build(),
 
                     PropertyDefinition.builder(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_REPOSITORY_SLUG)
                             .category(PULL_REQUEST_CATEGORY_LABEL).subCategory(BITBUCKET_INTEGRATION_SUBCATEGORY_LABEL).onlyOnQualifiers(Qualifiers.PROJECT).name("Repository Slug").description(

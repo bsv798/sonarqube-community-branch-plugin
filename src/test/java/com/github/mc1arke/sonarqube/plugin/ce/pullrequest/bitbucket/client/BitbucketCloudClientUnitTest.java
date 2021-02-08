@@ -49,7 +49,7 @@ public class BitbucketCloudClientUnitTest {
 
     @Before
     public void before() {
-        BitbucketConfiguration config = new BitbucketConfiguration("https://api.bitbucket.org", "token", "repository", "project");
+        BitbucketConfiguration config = new BitbucketConfiguration("https://api.bitbucket.org", "token", "oauth2key", "repository", "project");
         underTest = new BitbucketCloudClient(config, mapper) {
             @Override
             OkHttpClient getClient() {
