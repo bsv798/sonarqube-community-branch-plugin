@@ -41,6 +41,7 @@ public class BitbucketPullRequestDecoratorTest {
     private static final String PROJECT = "project";
     private static final String REPO = "repo";
     private static final String COMMIT = "commit";
+    private static final String BRANCH_NAME = "42";
 
     private static final String ISSUE_KEY = "issue-key";
     private static final int ISSUE_LINE = 1;
@@ -81,6 +82,7 @@ public class BitbucketPullRequestDecoratorTest {
         verify(client).createLinkDataValue(DASHBOARD_URL);
         verify(client).createCodeInsightsReport(any(), eq("Quality Gate passed" + System.lineSeparator()), any(), eq(DASHBOARD_URL), eq(String.format("%s/common/icon.png", IMAGE_URL)), eq(QualityGate.Status.OK));
         verify(client).deleteAnnotations(PROJECT, REPO, COMMIT);
+        verify(client).appovePullRequest(PROJECT, REPO, Integer.parseInt(BRANCH_NAME), false);
     }
 
     @Test
@@ -123,6 +125,7 @@ public class BitbucketPullRequestDecoratorTest {
     }
 
     private void mockValidAnalysis() {
+        when(analysisDetails.getBranchName()).thenReturn(BRANCH_NAME);
         when(analysisDetails.getCommitSha()).thenReturn(COMMIT);
         when(analysisDetails.getQualityGateStatus()).thenReturn(QualityGate.Status.OK);
 

@@ -103,6 +103,15 @@ public interface BitbucketClient {
 
     /**
      * <p>
+     * Approves or unapproves pull request
+     * </p>
+     * 
+     * @throws IOException
+     */
+    void appovePullRequest(String project, String repository, int pullRequestId, boolean unapprove) throws IOException;
+
+    /**
+     * <p>
      * Determines whether to use OAuth2 authorization or not
      * </p>
      * @return boolean

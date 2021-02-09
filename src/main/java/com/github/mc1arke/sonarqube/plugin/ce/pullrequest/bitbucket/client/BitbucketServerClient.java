@@ -197,6 +197,12 @@ public class BitbucketServerClient implements BitbucketClient {
     }
 
     @Override
+    public void appovePullRequest(String project, String repository, int pullRequestId, boolean unapprove)
+            throws IOException {
+        // Not implemented
+    }
+
+    @Override
     public boolean isOauth2() {
         return false;
     }

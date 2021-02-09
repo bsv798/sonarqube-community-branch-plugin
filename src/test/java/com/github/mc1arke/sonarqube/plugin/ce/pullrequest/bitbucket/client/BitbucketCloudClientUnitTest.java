@@ -231,4 +231,39 @@ public class BitbucketCloudClientUnitTest {
         assertEquals("FAILED", ((CloudCreateReportRequest) result).getResult());
 
     }
+
+    @Test
+    public void testApprovePullRequest() throws IOException {
+        Call call = mock(Call.class);
+        Response response = mock(Response.class);
+        ArgumentCaptor<Request> captor = ArgumentCaptor.forClass(Request.class);
+
+        when(client.newCall(any())).thenReturn(call);
+        when(call.execute()).thenReturn(response);
+        when(response.isSuccessful()).thenReturn(true);
+
+        underTest.appovePullRequest("project", "repository", 42, false);
+
+        verify(client, times(1)).newCall(captor.capture());
+        Request request = captor.getValue();
+        assertEquals("POST", request.method());
+        assertEquals("https://api.bitbucket.org/2.0/repositories/project/repository/pullrequests/42/approve", request.url().toString());
+    }
+
+    @Test
+    public void testAUnpprovePullRequest() throws IOException {
+        Call call = mock(Call.class);
+        Response response = mock(Response.class);
+        ArgumentCaptor<Request> captor = ArgumentCaptor.forClass(Request.class);
+
+        when(client.newCall(any())).thenReturn(call);
+        when(call.execute()).thenReturn(response);
+
+        underTest.appovePullRequest("project", "repository", 42, true);
+
+        verify(client, times(1)).newCall(captor.capture());
+        Request request = captor.getValue();
+        assertEquals("DELETE", request.method());
+        assertEquals("https://api.bitbucket.org/2.0/repositories/project/repository/pullrequests/42/approve", request.url().toString());
+    }
 }

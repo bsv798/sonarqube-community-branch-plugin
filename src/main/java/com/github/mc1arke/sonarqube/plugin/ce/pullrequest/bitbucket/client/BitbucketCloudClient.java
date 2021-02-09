@@ -53,6 +53,7 @@ public class BitbucketCloudClient implements BitbucketClient {
     private static final Logger LOGGER = Loggers.get(BitbucketCloudClient.class);
     private static final String REPORT_KEY = "com.github.mc1arke.sonarqube";
     private static final MediaType APPLICATION_JSON_MEDIA_TYPE = MediaType.get("application/json");
+    private static final RequestBody EMPTY_JSON_REQUEST_BODY = RequestBody.create(APPLICATION_JSON_MEDIA_TYPE, "{}");
     private static final String TITLE = "SonarQube";
     private static final String REPORTER = "SonarQube";
     private static final String LINK_TEXT = "Go to SonarQube";
@@ -196,6 +197,23 @@ public class BitbucketCloudClient implements BitbucketClient {
             }
 
             throw new BitbucketCloudException(response.code(), error);
+        }
+    }
+
+    @Override
+    public void appovePullRequest(String project, String repository, int pullRequestId, boolean unapprove)
+            throws IOException {
+        okhttp3.Request.Builder builder = new Request.Builder()
+                .url(format("%s/2.0/repositories/%s/%s/pullrequests/%d/approve", config.getUrl(), project, repository, pullRequestId));
+        Request req = (unapprove) ? builder.delete().build() : builder.post(EMPTY_JSON_REQUEST_BODY).build();
+        String approveAction = (unapprove) ? "Unapproving" : "Approving";
+
+        LOGGER.info(format("%s pull request on bitbucket cloud", approveAction));
+
+        try (Response response = getClient().newCall(req).execute()) {
+            if (!unapprove && (response.code() != 409)) { // ignore conflict http code due to multiple approvals
+                validate(response);
+            }
         }
     }
 
