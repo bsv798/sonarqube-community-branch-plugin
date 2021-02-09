@@ -101,4 +101,11 @@ public interface BitbucketClient {
      */
     AnnotationUploadLimit getAnnotationUploadLimit();
 
+    /**
+     * <p>
+     * Determines whether to use OAuth2 authorization or not
+     * </p>
+     * @return boolean
+     */
+    boolean isOauth2();
 }

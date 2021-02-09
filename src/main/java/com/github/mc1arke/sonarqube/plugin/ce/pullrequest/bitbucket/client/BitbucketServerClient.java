@@ -195,4 +195,9 @@ public class BitbucketServerClient implements BitbucketClient {
             throw new BitbucketException(response.code(), errors);
         }
     }
+
+    @Override
+    public boolean isOauth2() {
+        return false;
+    }
 }

@@ -19,6 +19,7 @@
 package com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.auth.Oauth2Authenticator;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.AnnotationUploadLimit;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.BitbucketConfiguration;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.CodeInsightsAnnotation;
@@ -30,6 +31,7 @@ import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model
 import com.google.common.annotations.VisibleForTesting;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.OkHttpClient.Builder;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -57,10 +59,12 @@ public class BitbucketCloudClient implements BitbucketClient {
 
     private final BitbucketConfiguration config;
     private final ObjectMapper objectMapper;
+    private final Oauth2Authenticator oauth2;
 
     public BitbucketCloudClient(BitbucketConfiguration config, ObjectMapper objectMapper) {
         this.config = config;
         this.objectMapper = objectMapper;
+        this.oauth2 = new Oauth2Authenticator(config, objectMapper);
     }
 
     @Override
@@ -165,15 +169,21 @@ public class BitbucketCloudClient implements BitbucketClient {
 
     @VisibleForTesting
     OkHttpClient getClient() {
-        return new OkHttpClient.Builder()
+        Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request newRequest = chain.request().newBuilder()
                             .addHeader("Authorization", format("Basic %s", config.getToken()))
                             .addHeader("Accept", APPLICATION_JSON_MEDIA_TYPE.toString())
                             .build();
                     return chain.proceed(newRequest);
-                })
-                .build();
+                });
+
+        if (isOauth2()) {
+            builder.authenticator(oauth2);
+            builder.addInterceptor(oauth2);
+        }
+
+        return builder.build();
     }
 
     void validate(Response response) throws IOException {
@@ -187,5 +197,10 @@ public class BitbucketCloudClient implements BitbucketClient {
 
             throw new BitbucketCloudException(response.code(), error);
         }
+    }
+
+    @Override
+    public boolean isOauth2() {
+        return (config.getOauth2Key() != null) && !config.getOauth2Key().isEmpty();
     }
 }
