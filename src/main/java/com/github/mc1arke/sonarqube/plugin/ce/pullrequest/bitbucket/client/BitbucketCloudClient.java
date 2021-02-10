@@ -18,7 +18,10 @@
  */
 package com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.AnalysisDetails;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.auth.Oauth2Authenticator;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.AnnotationUploadLimit;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.BitbucketConfiguration;
@@ -47,7 +50,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-
 
 public class BitbucketCloudClient implements BitbucketClient {
     private static final Logger LOGGER = Loggers.get(BitbucketCloudClient.class);
@@ -215,6 +217,70 @@ public class BitbucketCloudClient implements BitbucketClient {
                 validate(response);
             }
         }
+    }
+
+    @Override
+    public void createSummaryComment(String project, String repository, int pullRequestId,
+            AnalysisDetails analysisDetails) throws IOException {
+        String commentId = getSummaryCommentId(project, repository, pullRequestId);
+        boolean commentExists = (commentId != null);
+        String commentUrl = format("%s/2.0/repositories/%s/%s/pullrequests/%d/comments", config.getUrl(), project, repository, pullRequestId);
+        commentUrl = (commentExists) ? commentUrl + "/" + commentId : commentUrl;
+        okhttp3.Request.Builder builder = new Request.Builder()
+                .url(commentUrl);
+        RequestBody commentBody = getSummaryCommentBody(analysisDetails);
+        Request req = (commentExists) ? builder.put(commentBody).build() : builder.post(commentBody).build();
+        String commentAction = (commentExists) ? "Updating" : "Creating";
+
+        LOGGER.info(format("%s pull request summary comment on bitbucket cloud", commentAction));
+
+        try (Response response = getClient().newCall(req).execute()) {
+            validate(response);
+        }
+    }
+
+    protected String getSummaryCommentId(String project, String repository, int pullRequestId) throws IOException {
+        String commentUrl = format("%s/2.0/repositories/%s/%s/pullrequests/%d/comments"
+                + "?q=content.raw~%%22SonarQube%%20analysis%%20reports%%20%%22%%20AND%%20deleted=false%%20AND%%20inline.path=null",
+                config.getUrl(), project, repository, pullRequestId);
+        Request req = new Request.Builder()
+                .url(commentUrl)
+                .build();
+        String commentId = null;
+
+        try (Response response = getClient().newCall(req).execute()) {
+            validate(response);
+
+            JsonNode responseArray = objectMapper.readTree(response.body().string())
+                    .withArray("values");
+
+            if (responseArray.size() > 0) {
+                commentId = responseArray.get(0)
+                        .get("id")
+                        .asText();
+            }
+        }
+
+        return commentId;
+    }
+
+    protected RequestBody getSummaryCommentBody(AnalysisDetails analysisDetails) {
+        boolean hasFailedConditions = analysisDetails.getPostAnalysisIssueVisitor().getIssues().size() > 0;
+        boolean passedQualityGate = analysisDetails.getQualityGateStatus() == QualityGate.Status.OK;
+        String severity = "no";
+        severity = (hasFailedConditions && passedQualityGate) ? "minor" : severity;
+        severity = (hasFailedConditions && !passedQualityGate) ? "severe" : severity;
+        String firstPart = format("SonarQube analysis reports %s issues.", severity);
+        String secondPart = (hasFailedConditions) ?
+                format("Please refer to [dashboard](%s) for details.", analysisDetails.getDashboardUrl()) :
+                "Take a chocolate :)";
+        String commentText = firstPart + " " + secondPart;
+        ObjectNode commentNode = objectMapper.createObjectNode();
+
+        commentNode.putObject("content")
+                .put("raw", commentText);
+
+        return RequestBody.create(APPLICATION_JSON_MEDIA_TYPE, commentNode.toString());
     }
 
     @Override

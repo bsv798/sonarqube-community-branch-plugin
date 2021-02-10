@@ -19,6 +19,7 @@
 package com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.AnalysisDetails;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.AnnotationUploadLimit;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.BitbucketConfiguration;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.CodeInsightsAnnotation;
@@ -199,6 +200,12 @@ public class BitbucketServerClient implements BitbucketClient {
     @Override
     public void appovePullRequest(String project, String repository, int pullRequestId, boolean unapprove)
             throws IOException {
+        // Not implemented
+    }
+
+    @Override
+    public void createSummaryComment(String project, String repository, int pullRequestId,
+            AnalysisDetails analysisDetails) throws IOException {
         // Not implemented
     }
 

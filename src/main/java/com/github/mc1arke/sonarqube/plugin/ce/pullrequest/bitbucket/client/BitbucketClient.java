@@ -18,6 +18,7 @@
  */
 package com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client;
 
+import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.AnalysisDetails;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.AnnotationUploadLimit;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.CodeInsightsAnnotation;
 import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.bitbucket.client.model.CodeInsightsReport;
@@ -109,6 +110,16 @@ public interface BitbucketClient {
      * @throws IOException
      */
     void appovePullRequest(String project, String repository, int pullRequestId, boolean unapprove) throws IOException;
+
+    /**
+     * <p>
+     * Creates or updates analysis summary comment
+     * </p>
+     * 
+     * @throws IOException
+     */
+    void createSummaryComment(String project, String repository, int pullRequestId,
+            AnalysisDetails analysisDetails) throws IOException;
 
     /**
      * <p>

@@ -68,6 +68,7 @@ public class BitbucketPullRequestDecoratorTest {
         when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_PROJECT_KEY)).thenReturn(PROJECT);
         when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_REPOSITORY_SLUG)).thenReturn(REPO);
         when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_APPROVAL_ENABLED)).thenReturn("true");
+        when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_COMMENT_SUMMARY_ENABLED)).thenReturn("true");
     }
 
     @Test
@@ -84,6 +85,7 @@ public class BitbucketPullRequestDecoratorTest {
         verify(client).createCodeInsightsReport(any(), eq("Quality Gate passed" + System.lineSeparator()), any(), eq(DASHBOARD_URL), eq(String.format("%s/common/icon.png", IMAGE_URL)), eq(QualityGate.Status.OK));
         verify(client).deleteAnnotations(PROJECT, REPO, COMMIT);
         verify(client).appovePullRequest(PROJECT, REPO, Integer.parseInt(BRANCH_NAME), false);
+        verify(client).createSummaryComment(PROJECT, REPO, Integer.parseInt(BRANCH_NAME), analysisDetails);
     }
 
     @Test
