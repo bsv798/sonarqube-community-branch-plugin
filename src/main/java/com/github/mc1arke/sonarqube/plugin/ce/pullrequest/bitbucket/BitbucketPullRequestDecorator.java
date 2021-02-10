@@ -88,6 +88,7 @@ public class BitbucketPullRequestDecorator implements PullRequestBuildStatusDeco
         String token = configuration.getRequiredProperty(PULL_REQUEST_BITBUCKET_TOKEN);
         String oauth2Key = configuration.getRequiredProperty(PULL_REQUEST_BITBUCKET_OAUTH2_KEY);
         BitbucketConfiguration bitbucketConfiguration = new BitbucketConfiguration(url, token, oauth2Key, repo, project);
+        boolean pullRequestApprovalEnabled = Boolean.parseBoolean(configuration.getRequiredProperty(PULL_REQUEST_APPROVAL_ENABLED));
 
         BitbucketClient client = createClient(bitbucketConfiguration);
 
@@ -111,9 +112,11 @@ public class BitbucketPullRequestDecorator implements PullRequestBuildStatusDeco
 
             updateAnnotations(client, project, repo, analysisDetails);
 
-            client.appovePullRequest(project, repo,
-                    Integer.parseInt(analysisDetails.getBranchName()),
-                    analysisDetails.getQualityGateStatus() != QualityGate.Status.OK);
+            if (pullRequestApprovalEnabled) {
+                client.appovePullRequest(project, repo,
+                        Integer.parseInt(analysisDetails.getBranchName()),
+                        analysisDetails.getQualityGateStatus() != QualityGate.Status.OK);
+            }
         } catch (IOException e) {
             LOGGER.error("Could not decorate pull request for project {}", analysisDetails.getAnalysisProjectKey(), e);
         }

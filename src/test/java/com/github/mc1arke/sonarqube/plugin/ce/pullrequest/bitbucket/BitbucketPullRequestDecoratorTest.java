@@ -67,6 +67,7 @@ public class BitbucketPullRequestDecoratorTest {
     public void setUp() {
         when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_PROJECT_KEY)).thenReturn(PROJECT);
         when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_REPOSITORY_SLUG)).thenReturn(REPO);
+        when(unifyConfiguration.getRequiredProperty(BitbucketPullRequestDecorator.PULL_REQUEST_APPROVAL_ENABLED)).thenReturn("true");
     }
 
     @Test

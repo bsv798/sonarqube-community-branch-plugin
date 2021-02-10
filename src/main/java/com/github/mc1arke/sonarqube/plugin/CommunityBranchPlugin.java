@@ -135,6 +135,10 @@ public class CommunityBranchPlugin implements Plugin, CoreExtension {
                             .onQualifiers(Qualifiers.PROJECT).name("Enable deleting comments").description("This cleans up the comments from previous runs (if implemented).")
                             .type(PropertyType.BOOLEAN).defaultValue("false").build(),
 
+                    PropertyDefinition.builder(PullRequestBuildStatusDecorator.PULL_REQUEST_APPROVAL_ENABLED).category(PULL_REQUEST_CATEGORY_LABEL).subCategory(GENERAL)
+                            .onQualifiers(Qualifiers.PROJECT).name("Enable pull request approval").description("This approves or unapproves pull request based on quality gate status (if implemented).")
+                            .type(PropertyType.BOOLEAN).defaultValue("false").build(),
+
                     PropertyDefinition.builder(BitbucketPullRequestDecorator.PULL_REQUEST_BITBUCKET_URL).category(PULL_REQUEST_CATEGORY_LABEL).subCategory(BITBUCKET_INTEGRATION_SUBCATEGORY_LABEL)
                             .onQualifiers(Qualifiers.PROJECT).name("URL for Bitbucket (Server or Cloud) instance").description("Example: http://bitbucket.local").type(PropertyType.STRING).build(),
 

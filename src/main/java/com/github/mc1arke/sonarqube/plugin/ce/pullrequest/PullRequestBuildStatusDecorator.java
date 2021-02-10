@@ -26,6 +26,8 @@ public interface PullRequestBuildStatusDecorator {
 
     String PULL_REQUEST_DELETE_COMMENTS_ENABLED = "com.github.mc1arke.sonarqube.plugin.branch.pullrequest.delete.comments.enabled";
 
+    String PULL_REQUEST_APPROVAL_ENABLED = "com.github.mc1arke.sonarqube.plugin.branch.pullrequest.approval.enabled";
+
     String name();
 
     DecorationResult decorateQualityGateStatus(AnalysisDetails analysisDetails, UnifyConfiguration configuration);
